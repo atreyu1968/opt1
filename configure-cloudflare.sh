@@ -4,6 +4,14 @@ set -euo pipefail
 PORT_VALUE="${OPT1_PORT:-8080}"
 API_DOMAIN="${OPT1_API_DOMAIN:-}"
 TUNNEL_TOKEN="${OPT1_CF_TUNNEL_TOKEN:-}"
+REPLACE_SERVICE="${OPT1_CF_REPLACE:-0}"
+
+if [ "${1:-}" = "--replace-service" ]; then
+  REPLACE_SERVICE=1
+elif [ "$#" -gt 0 ]; then
+  echo "Uso: sudo bash configure-cloudflare.sh [--replace-service]"
+  exit 1
+fi
 
 if [ "$(id -u)" -ne 0 ]; then
   echo "Este configurador necesita permisos de administración."
@@ -45,13 +53,7 @@ echo "deb [signed-by=/usr/share/keyrings/cloudflare-main.gpg] https://pkg.cloudf
 apt-get update
 DEBIAN_FRONTEND=noninteractive apt-get install -y cloudflared
 
-if systemctl list-unit-files cloudflared.service --no-legend 2>/dev/null | grep -q '^cloudflared.service'; then
-  echo ""
-  echo "Ya existe un servicio cloudflared en este servidor."
-  echo "No se sustituirá automáticamente porque podría publicar otras aplicaciones."
-  systemctl enable --now cloudflared
-  echo "Servicio existente iniciado. Ejecute el diagnóstico al terminar."
-else
+request_token() {
   if [ -z "$TUNNEL_TOKEN" ] && [ -t 0 ]; then
     echo ""
     echo "En Cloudflare Zero Trust cree/abra el túnel y copie únicamente el token eyJ..."
@@ -63,6 +65,27 @@ else
     echo "Vuelva a ejecutar este script y péguelo cuando se solicite."
     exit 1
   fi
+}
+
+if systemctl list-unit-files cloudflared.service --no-legend 2>/dev/null | grep -q '^cloudflared.service'; then
+  echo ""
+  echo "Ya existe un servicio cloudflared en este servidor."
+  if [ "$REPLACE_SERVICE" = "1" ]; then
+    echo "Se ha solicitado expresamente reemplazar el servicio existente."
+    echo "Continúe solo si este conector está dedicado a OPT1."
+    request_token
+    cloudflared service uninstall
+    cloudflared service install "$TUNNEL_TOKEN"
+    unset TUNNEL_TOKEN OPT1_CF_TUNNEL_TOKEN
+    systemctl enable --now cloudflared
+  else
+    echo "No se sustituirá automáticamente porque podría publicar otras aplicaciones."
+    systemctl enable --now cloudflared
+    echo "Si este conector pertenece solo a OPT1 y su token es incorrecto, use:"
+    echo "  sudo bash configure-cloudflare.sh --replace-service"
+  fi
+else
+  request_token
   cloudflared service install "$TUNNEL_TOKEN"
   unset TUNNEL_TOKEN OPT1_CF_TUNNEL_TOKEN
   systemctl enable --now cloudflared
