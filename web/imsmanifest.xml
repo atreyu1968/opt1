@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest identifier="SA_UD1_ISLAOFFICE" version="1.0"
+ xmlns="http://www.imsproject.org/xsd/imscp_rootv1p1p2"
+ xmlns:adlcp="http://www.adlnet.org/xsd/adlcp_rootv1p2"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://www.imsproject.org/xsd/imscp_rootv1p1p2 imscp_rootv1p1p2.xsd http://www.adlnet.org/xsd/adlcp_rootv1p2 adlcp_rootv1p2.xsd">
+  <metadata>
+    <schema>ADL SCORM</schema>
+    <schemaversion>1.2</schemaversion>
+  </metadata>
+  <organizations default="ORG_1">
+    <organization identifier="ORG_1">
+      <title>Unidad 1 Gestión de suministros y logística interna</title>
+      <item identifier="ITEM_1" identifierref="RES_1" isvisible="true">
+        <title>Puesta en marcha del almacén de IslaOffice</title>
+      </item>
+    </organization>
+  </organizations>
+  <resources>
+    <resource identifier="RES_1" type="webcontent" adlcp:scormtype="sco" href="index.html">
+      <file href="index.html"/>
+      <file href="styles.css"/>
+      <file href="auth.css"/>
+      <file href="app.js"/>
+      <file href="config.js"/>
+      <file href="remote.js"/>
+      <file href="plantillas.html"/>
+      <file href="auth.css"/>
+    </resource>
+  </resources>
+</manifest>
