@@ -68,6 +68,13 @@ for attempt in 1 2 3 4 5; do
     else
       echo "Configure el dominio HTTPS y después abra /admin.html para crear el administrador."
     fi
+    echo ""
+    echo "Para instalar o comprobar Cloudflare Tunnel:"
+    echo "  sudo bash configure-cloudflare.sh"
+    if [ -n "${OPT1_CF_TUNNEL_TOKEN:-}" ]; then
+      echo "Se ha recibido un token por variable de entorno; configurando el túnel..."
+      bash "$SOURCE_DIR/configure-cloudflare.sh"
+    fi
     exit 0
   fi
   sleep 2
