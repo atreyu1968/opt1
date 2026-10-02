@@ -25,19 +25,48 @@ El primer acceso debe indicar la dirección pública de la API. Puede enviarse y
 
 La dirección queda guardada en el navegador y desaparece de la barra de direcciones.
 
-## Instalación desatendida en Ubuntu
+## Instalación desde un servidor Ubuntu completamente vacío
 
-Requisitos: Ubuntu 22.04 o 24.04, acceso con sudo y un dominio o túnel que publique el puerto del servicio.
+Estas instrucciones sirven para Ubuntu Server 22.04 o 24.04 recién instalado, aunque no tenga `git`, `curl`, Node.js ni ninguna dependencia.
+
+### 1 Actualizar el sistema e instalar las herramientas básicas
+
+Acceda por SSH y ejecute:
 
 ```bash
 sudo apt update
-sudo apt install -y git
+sudo DEBIAN_FRONTEND=noninteractive apt upgrade -y
+sudo apt install -y git curl ca-certificates gnupg unzip
+```
+
+Compruebe que Git y Curl funcionan:
+
+```bash
+git --version
+curl --version
+```
+
+### 2 Descargar OPT1
+
+```bash
 git clone https://github.com/atreyu1968/opt1.git
 cd opt1
+```
+
+Si la carpeta `opt1` ya existe porque está actualizando una instalación anterior:
+
+```bash
+cd opt1
+git pull --ff-only
+```
+
+### 3 Ejecutar el instalador automático
+
+```bash
 sudo bash install.sh
 ```
 
-El instalador solicitará el dominio HTTPS de la API y después:
+El instalador solicitará el dominio HTTPS de la API, por ejemplo `https://opt1.iesmmg.org`. Después:
 
 - instala Node.js 22 cuando resulte necesario;
 - crea el usuario de sistema `opt1`;
@@ -45,6 +74,36 @@ El instalador solicitará el dominio HTTPS de la API y después:
 - crea la base de datos en `/var/lib/opt1/opt1.sqlite`;
 - registra y activa el servicio `opt1.service`;
 - inicia la aplicación en el puerto 8080.
+
+No es necesario ejecutar `npm install`: el servidor utiliza las funciones integradas de Node.js 22 y no depende de paquetes externos.
+
+### 4 Comprobar el servicio
+
+```bash
+sudo systemctl status opt1 --no-pager
+curl http://127.0.0.1:8080/api/health
+```
+
+La segunda orden debe devolver un objeto con `"ok":true`.
+
+Para consultar los últimos mensajes del servicio:
+
+```bash
+sudo journalctl -u opt1 -n 100 --no-pager
+```
+
+### 5 Cortafuegos
+
+Si utiliza UFW y va a acceder directamente al puerto 8080 desde la red local:
+
+```bash
+sudo ufw allow OpenSSH
+sudo ufw allow 8080/tcp
+sudo ufw enable
+sudo ufw status
+```
+
+Si usa Cloudflare Tunnel en el mismo servidor, no necesita abrir públicamente el puerto 8080. Manténgalo accesible solo desde `localhost` a través del túnel.
 
 ## Configuración
 
@@ -110,6 +169,21 @@ El servicio escucha en `http://localhost:8080`. En Cloudflare Tunnel, cree un ho
 
 Use siempre HTTPS en la dirección pública. GitHub Pages no permitirá conectarse a una API HTTP insegura.
 
+Si `cloudflared` todavía no está instalado, utilice el comando de instalación que proporciona Cloudflare al crear el túnel desde **Zero Trust > Networks > Tunnels**. Después, añada un hostname público con estos datos:
+
+- Subdominio: el elegido, por ejemplo `opt1`.
+- Dominio: su dominio educativo.
+- Tipo de servicio: `HTTP`.
+- URL de destino: `localhost:8080`.
+
+Compruebe desde otro equipo:
+
+```bash
+curl https://DOMINIO-DE-LA-API/api/health
+```
+
+No continúe con el alumnado hasta que esta dirección devuelva `"ok":true`.
+
 ## Actualización
 
 ```bash
@@ -119,6 +193,53 @@ sudo bash install.sh
 ```
 
 La base de datos permanece en `/var/lib/opt1` y no se elimina durante la actualización.
+
+## Desinstalación conservando una copia
+
+Antes de retirar la aplicación, guarde la base de datos. Después:
+
+```bash
+sudo systemctl disable --now opt1
+sudo cp /var/lib/opt1/opt1.sqlite /ruta/segura/opt1-ultima-copia.sqlite
+sudo rm /etc/systemd/system/opt1.service
+sudo systemctl daemon-reload
+```
+
+Los directorios `/opt/opt1` y `/var/lib/opt1` pueden conservarse hasta confirmar que ya no necesita recuperar información.
+
+## Solución de problemas
+
+### El servicio no arranca
+
+```bash
+node --version
+sudo journalctl -u opt1 -n 100 --no-pager
+```
+
+OPT1 necesita Node.js 22 o posterior. Puede volver a ejecutar `sudo bash install.sh`; el instalador es idempotente y no borra la base de datos.
+
+### GitHub Pages abre el curso, pero no guarda el progreso
+
+Compruebe:
+
+1. Que el enlace contiene `?api=https://DOMINIO-DE-LA-API`.
+2. Que la API responde en `/api/health`.
+3. Que `PUBLIC_ORIGINS` contiene `https://atreyu1968.github.io`.
+4. Que tanto GitHub Pages como la API utilizan HTTPS.
+
+### Error de origen o CORS
+
+Edite `/opt/opt1/server/.env` y deje los orígenes separados por comas, sin rutas:
+
+```ini
+PUBLIC_ORIGINS=https://atreyu1968.github.io,https://opt1.iesmmg.org
+```
+
+Reinicie:
+
+```bash
+sudo systemctl restart opt1
+```
 
 ## Copia de seguridad
 
