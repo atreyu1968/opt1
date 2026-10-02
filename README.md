@@ -195,6 +195,14 @@ Si ya existe `cloudflared.service`, el script no lo reemplaza, porque ese túnel
 
 `https://SU-DOMINIO` → `http://localhost:8080`
 
+Si ha confirmado que el servicio existente está dedicado únicamente a OPT1 y necesita cambiar su token, use la opción explícita:
+
+```bash
+sudo bash configure-cloudflare.sh --replace-service
+```
+
+No use esta opción si el mismo conector publica otros servicios del servidor.
+
 Compruebe desde otro equipo:
 
 ```bash
