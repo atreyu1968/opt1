@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Unidad 1 Gestión de suministros</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="auth.css">
+</head>
+<body>
+  <a class="skip" href="#contenido">Saltar al contenido</a>
+  <section id="authGate" class="auth-gate" hidden aria-labelledby="authTitle">
+    <div class="auth-card">
+      <span class="pill">ACCESO DEL ALUMNADO</span>
+      <h2 id="authTitle">Continúa tu aprendizaje</h2>
+      <p>Introduce tu código personal y tu PIN, o crea una cuenta la primera vez.</p>
+      <div class="auth-tabs"><button class="active" data-auth-tab="login">Entrar</button><button data-auth-tab="register">Registrarme</button></div>
+      <form id="loginForm" class="auth-form">
+        <label>Código personal<input name="code" autocomplete="username" placeholder="OPT-ABC123" required></label>
+        <label>PIN<input name="pin" type="password" inputmode="numeric" autocomplete="current-password" minlength="4" maxlength="8" required></label>
+        <button class="primary" type="submit">Entrar y continuar</button>
+      </form>
+      <form id="registerForm" class="auth-form" hidden>
+        <label>Nombre<input name="firstName" autocomplete="given-name" maxlength="60" required></label>
+        <label>Apellidos<input name="lastName" autocomplete="family-name" maxlength="100" required></label>
+        <label>Grupo<input name="group" placeholder="2.º CFGM GA" maxlength="60" required></label>
+        <label>Elige un PIN<input name="pin" type="password" inputmode="numeric" minlength="4" maxlength="8" pattern="[0-9]{4,8}" required></label>
+        <button class="primary" type="submit">Crear mi acceso</button>
+      </form>
+      <div id="authFeedback" class="feedback" aria-live="polite"></div>
+      <details><summary>Configurar servidor</summary><label>Dirección de la API<input id="apiUrlInput" type="url" placeholder="https://opt1.example.org"></label><button id="saveApiUrl" class="ghost dark" type="button">Guardar dirección</button></details>
+    </div>
+  </section>
+  <header class="topbar">
+    <div>
+      <span class="eyebrow">OPERATIVA AUXILIAR Y LOGÍSTICA DE OFICINA</span>
+      <h1>Unidad 1 · Gestión de suministros</h1>
+    </div>
+    <div class="student"><span id="studentName">Modo local</span><button id="exitBtn" class="ghost">Guardar y salir</button></div>
+  </header>
+  <div class="progress-wrap" aria-label="Progreso del curso"><div id="progressBar" class="progress"></div><span id="progressText">0 %</span></div>
+  <div class="layout">
+    <nav aria-label="Misiones de la unidad">
+      <button class="nav-item active" data-view="home"><span>⌂</span> Inicio</button>
+      <button class="nav-item" data-view="m1"><span>1</span> Clasificar</button>
+      <button class="nav-item locked" data-view="m2"><span>2</span> Organizar</button>
+      <button class="nav-item locked" data-view="m3"><span>3</span> Inventariar</button>
+      <button class="nav-item locked" data-view="m4"><span>4</span> Reponer</button>
+      <button class="nav-item locked" data-view="m5"><span>5</span> Comprar</button>
+      <button class="nav-item locked" data-view="m6"><span>6</span> Recibir</button>
+      <button class="nav-item locked" data-view="final"><span>✓</span> Evaluación</button>
+      <button class="nav-item" data-view="portfolio"><span>▣</span> Mi dossier</button>
+    </nav>
+    <main id="contenido" tabindex="-1">
+      <section id="home" class="view active">
+        <div class="hero">
+          <div>
+            <span class="pill">RETO PROFESIONAL · 18 HORAS</span>
+            <h2>Puesta en marcha del almacén de IslaOffice</h2>
+            <p>La empresa pierde tiempo, compra materiales repetidos y descubre demasiado tarde que se ha terminado el tóner. Tu misión consiste en implantar un sistema sencillo para localizar, contar, reponer y recibir el material.</p>
+            <button class="primary go" data-target="m1">Comenzar la misión</button>
+          </div>
+          <div class="warehouse" role="img" aria-label="Almacén de oficina organizado">
+            <div class="shelf"><b>ARCHIVO</b><i>▥</i><i>▥</i><i>▥</i></div>
+            <div class="shelf"><b>PAPEL</b><i>▤</i><i>▤</i><i>▤</i></div>
+            <div class="shelf"><b>TÓNER</b><i>●</i><i>●</i><i>●</i></div>
+          </div>
+        </div>
+        <h3>Así aprenderás</h3>
+        <div class="route">
+          <div><strong>1</strong><span>Observa</span></div><div><strong>2</strong><span>Practica</span></div><div><strong>3</strong><span>Resuelve</span></div><div><strong>4</strong><span>Comprueba</span></div>
+        </div>
+        <div class="notice"><b>Funcionamiento autoguiado.</b> Lee cada explicación, realiza la práctica y supera la comprobación. Dispones de tres intentos en las prácticas. La evaluación final solo permite un intento.</div>
+      </section>
+
+      <section id="m1" class="view mission" data-mission="1">
+        <div class="mission-head teal"><span>1</span><div><small>MISIÓN 1</small><h2>Clasificar y codificar</h2></div></div>
+        <div class="learn-grid">
+          <article><h3>Cuatro familias</h3><div class="family-grid"><div>📄<b>Papelería</b><small>Folios, sobres, carpetas</small></div><div>🖨️<b>Consumibles</b><small>Tóner, tinta, etiquetas</small></div><div>🗄️<b>Mobiliario</b><small>Archivadores, bandejas</small></div><div>🧤<b>Higiene y seguridad</b><small>Guantes, jabón, botiquín</small></div></div></article>
+          <article><h3>Un código útil</h3><p>El código debe ser corto, único y comprensible.</p><div class="formula"><span>PAP</span><b>−</b><span>A4</span><b>−</b><span>80</span></div><p><b>PAP</b> identifica la familia, <b>A4</b> el formato y <b>80</b> el gramaje.</p></article>
+        </div>
+        <div class="example"><b>Ejemplo resuelto.</b> Un cartucho negro para impresora láser puede codificarse como <strong>CON-TON-N</strong>.</div>
+        <div class="practice" data-id="p1" data-answer="consumibles">
+          <h3>Práctica guiada</h3><p>¿A qué familia pertenece un cartucho de tóner?</p>
+          <div class="options"><button data-value="papelería">Papelería</button><button data-value="consumibles">Consumibles</button><button data-value="mobiliario">Mobiliario</button></div>
+          <p class="feedback" aria-live="polite"></p>
+        </div>
+        <button class="primary complete" data-mission="1">Completar misión 1</button>
+      </section>
+
+      <section id="m2" class="view mission" data-mission="2">
+        <div class="mission-head green"><span>2</span><div><small>MISIÓN 2</small><h2>Organizar con seguridad</h2></div></div>
+        <div class="safety-scene">
+          <div class="level top"><b>ARRIBA</b><span>Objetos ligeros y poco usados</span><i>📦</i></div>
+          <div class="level middle"><b>A LA ALTURA DE LAS MANOS</b><span>Material frecuente</span><i>📁 ✏️</i></div>
+          <div class="level bottom"><b>ABAJO</b><span>Cajas pesadas y estables</span><i>📦📦</i></div>
+        </div>
+        <div class="rules"><div>✓ Pasillos libres</div><div>✓ Etiquetas visibles</div><div>✓ Cargas pesadas abajo</div><div>✓ Material frecuente al alcance</div></div>
+        <div class="practice" data-id="p2" data-answer="abajo">
+          <h3>Decisión profesional</h3><p>¿Dónde colocarías una caja pesada de cinco paquetes de folios?</p>
+          <div class="options"><button data-value="arriba">En la balda superior</button><button data-value="centro">A la altura de la cabeza</button><button data-value="abajo">En una balda baja</button></div><p class="feedback" aria-live="polite"></p>
+        </div>
+        <button class="primary complete" data-mission="2">Completar misión 2</button>
+      </section>
+
+      <section id="m3" class="view mission" data-mission="3">
+        <div class="mission-head blue"><span>3</span><div><small>MISIÓN 3</small><h2>Realizar el inventario</h2></div></div>
+        <div class="steps"><div><b>1</b><span>Preparar zonas</span></div><div><b>2</b><span>Contar sin mover</span></div><div><b>3</b><span>Anotar</span></div><div><b>4</b><span>Comparar</span></div></div>
+        <table class="demo-table"><thead><tr><th>Artículo</th><th>Sistema</th><th>Real</th><th>Diferencia</th></tr></thead><tbody><tr><td>Carpetas azules</td><td>12</td><td>10</td><td class="bad">−2</td></tr><tr><td>Cajas de grapas</td><td>5</td><td>6</td><td class="good">+1</td></tr></tbody></table>
+        <div class="example"><b>Recuerda.</b> Diferencia = existencia real − existencia registrada.</div>
+        <div class="practice calc" data-id="p3" data-answer="-3"><h3>Calcula</h3><p>El sistema indica 15 paquetes y el recuento encuentra 12. ¿Cuál es la diferencia?</p><input type="number" aria-label="Diferencia de inventario"><button class="check-input">Comprobar</button><p class="feedback" aria-live="polite"></p></div>
+        <button class="primary complete" data-mission="3">Completar misión 3</button>
+      </section>
+
+      <section id="m4" class="view mission" data-mission="4">
+        <div class="mission-head coral"><span>4</span><div><small>MISIÓN 4</small><h2>Calcular la reposición</h2></div></div>
+        <div class="formula big"><span>Consumo durante el plazo</span><b>+</b><span>Stock de seguridad</span><b>=</b><span>Punto de pedido</span></div>
+        <div class="worked"><h3>Ejemplo paso a paso</h3><ol><li>Se consumen <b>4 cajas por semana</b>.</li><li>El proveedor tarda <b>2 semanas</b>: 4 × 2 = <b>8 cajas</b>.</li><li>La reserva es de <b>3 cajas</b>.</li><li>Punto de pedido: 8 + 3 = <b>11 cajas</b>.</li></ol></div>
+        <div class="practice calc" data-id="p4" data-answer="14"><h3>Ahora tú</h3><p>Consumo: 3 paquetes por semana. Plazo: 4 semanas. Seguridad: 2 paquetes. ¿Cuál es el punto de pedido?</p><input type="number" aria-label="Punto de pedido"><button class="check-input">Comprobar</button><p class="feedback" aria-live="polite"></p></div>
+        <button class="primary complete" data-mission="4">Completar misión 4</button>
+      </section>
+
+      <section id="m5" class="view mission" data-mission="5">
+        <div class="mission-head yellow"><span>5</span><div><small>MISIÓN 5</small><h2>Preparar la compra</h2></div></div>
+        <h3>El precio no decide por sí solo</h3>
+        <div class="supplier-grid"><div><b>Proveedor A</b><span>42 €</span><small>Entrega 7 días · devolución difícil</small></div><div><b>Proveedor B</b><span>46 €</span><small>Entrega 2 días · buena calidad</small></div><div><b>Proveedor C</b><span>44 €</span><small>Entrega 5 días · calidad media</small></div></div>
+        <div class="document"><h3>Una propuesta completa indica</h3><div><span>Qué artículo</span><span>Qué cantidad</span><span>Para cuándo</span><span>Por qué se necesita</span><span>Proveedor elegido</span><span>Coste total</span></div></div>
+        <div class="practice" data-id="p5" data-answer="b"><h3>Decide</h3><p>Necesitamos el material en tres días y no podemos aceptar baja calidad. ¿Qué proveedor cumple el encargo?</p><div class="options"><button data-value="a">Proveedor A</button><button data-value="b">Proveedor B</button><button data-value="c">Proveedor C</button></div><p class="feedback" aria-live="polite"></p></div>
+        <button class="primary complete" data-mission="5">Completar misión 5</button>
+      </section>
+
+      <section id="m6" class="view mission" data-mission="6">
+        <div class="mission-head purple"><span>6</span><div><small>MISIÓN 6</small><h2>Comprobar la recepción</h2></div></div>
+        <div class="three-check"><div>🛒<b>PEDIDO</b><small>Lo que solicitamos</small></div><div>📄<b>ALBARÁN</b><small>Lo que declara el proveedor</small></div><div>📦<b>MERCANCÍA</b><small>Lo que realmente llega</small></div></div>
+        <div class="checklist"><h3>Antes de firmar</h3><label><input type="checkbox"> Contar los bultos</label><label><input type="checkbox"> Revisar golpes y humedad</label><label><input type="checkbox"> Comparar artículos y cantidades</label><label><input type="checkbox"> Anotar cualquier incidencia</label></div>
+        <div class="practice" data-id="p6" data-answer="incidencia"><h3>Incidencia</h3><p>El pedido indica 6 cajas, el albarán también, pero solo llegan 5. ¿Qué debes hacer?</p><div class="options"><button data-value="firmar">Firmar sin observaciones</button><button data-value="incidencia">Anotar la falta y reclamar</button><button data-value="cambiar">Cambiar el pedido</button></div><p class="feedback" aria-live="polite"></p></div>
+        <button class="primary complete" data-mission="6">Completar misión 6</button>
+      </section>
+
+      <section id="portfolio" class="view">
+        <span class="pill">PRODUCTO FINAL</span><h2>Mi dossier operativo</h2>
+        <p>Completa estas seis evidencias. Puedes escribir aquí para guardar un borrador y utilizar las plantillas imprimibles.</p>
+        <div id="portfolioFields" class="portfolio-grid"></div>
+        <a class="primary link" href="plantillas.html" target="_blank">Abrir plantillas imprimibles</a>
+      </section>
+
+      <section id="final" class="view">
+        <span class="pill danger">UN SOLO INTENTO</span><h2>Evaluación final</h2>
+        <p>La prueba contiene diez preguntas. Necesitas un 70 % para superar la unidad. Revisa las seis misiones antes de comenzar.</p>
+        <div id="examIntro"><button id="startExam" class="primary">Iniciar evaluación</button></div>
+        <form id="exam" hidden></form>
+        <div id="result" class="result" hidden></div>
+      </section>
+    </main>
+  </div>
+  <footer>IES Manuel Martín González · Administración y Gestión · Curso 2026–2027</footer>
+  <script src="config.js"></script>
+  <script src="remote.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
