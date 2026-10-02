@@ -1,0 +1,9 @@
+{
+  "name": "opt1-progress-server",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Servidor de progreso para OPT1 con SQLite",
+  "engines": {"node": ">=22.5.0"},
+  "scripts": {"start": "node server.mjs", "check": "node --check server.mjs"}
+}
