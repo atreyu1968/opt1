@@ -169,12 +169,31 @@ El servicio escucha en `http://localhost:8080`. En Cloudflare Tunnel, cree un ho
 
 Use siempre HTTPS en la dirección pública. GitHub Pages no permitirá conectarse a una API HTTP insegura.
 
-Si `cloudflared` todavía no está instalado, utilice el comando de instalación que proporciona Cloudflare al crear el túnel desde **Zero Trust > Networks > Tunnels**. Después, añada un hostname público con estos datos:
+### Configuración recomendada y automática
 
-- Subdominio: el elegido, por ejemplo `opt1`.
-- Dominio: su dominio educativo.
-- Tipo de servicio: `HTTP`.
-- URL de destino: `localhost:8080`.
+1. Entre en **Cloudflare Zero Trust > Networks > Tunnels**.
+2. Cree un túnel administrado remotamente o abra el que vaya a utilizar.
+3. En **Public hostnames / Published application routes**, añada:
+
+   - Subdominio: el elegido, por ejemplo `opt1`.
+   - Dominio: su dominio administrado por Cloudflare.
+   - Tipo de servicio: `HTTP`.
+   - URL de destino: `localhost:8080`.
+
+4. En la pantalla del conector Linux, copie solo el token largo que comienza normalmente por `eyJ`. No lo envíe por correo ni lo publique.
+5. En el servidor, dentro de la carpeta del repositorio, ejecute:
+
+```bash
+cd opt1
+git pull --ff-only
+sudo bash configure-cloudflare.sh
+```
+
+El script comprueba primero OPT1, instala `cloudflared` desde el repositorio oficial, solicita el token sin mostrarlo en pantalla, registra el servicio y comprueba el dominio público.
+
+Si ya existe `cloudflared.service`, el script no lo reemplaza, porque ese túnel podría publicar otras aplicaciones. En ese caso compruebe en Cloudflare que el túnel existente incluye esta ruta:
+
+`https://SU-DOMINIO` → `http://localhost:8080`
 
 Compruebe desde otro equipo:
 
@@ -183,6 +202,29 @@ curl https://DOMINIO-DE-LA-API/api/health
 ```
 
 No continúe con el alumnado hasta que esta dirección devuelva `"ok":true`.
+
+### Diagnóstico automático
+
+Ejecute, sustituyendo el dominio por el suyo:
+
+```bash
+sudo bash cloudflare-diagnostico.sh https://opt1.midominio.es
+```
+
+El diagnóstico verifica, en este orden:
+
+1. `opt1.service` y la API local.
+2. La instalación y el servicio de `cloudflared`.
+3. La salida del servidor hacia Cloudflare por el puerto 7844.
+4. La resolución DNS y la respuesta HTTPS pública.
+5. Los últimos eventos del túnel, ocultando posibles tokens.
+
+Interpretación de los errores más habituales:
+
+- **Error 1033**: Cloudflare no tiene ningún conector activo para ese túnel. Revise `cloudflared.service`, el token y la salida por el puerto 7844.
+- **Error 502**: el túnel está conectado, pero la ruta no llega a OPT1. Use exactamente `HTTP` y `localhost:8080`, no `HTTPS` ni el dominio público como destino.
+- **NXDOMAIN o dominio inexistente**: falta el hostname público/DNS en Cloudflare o el dominio todavía no usa los servidores DNS de Cloudflare.
+- **La API responde, pero el curso no guarda**: abra el curso con `?api=https://SU-DOMINIO` y compruebe `PUBLIC_ORIGINS`.
 
 ## Actualización
 
