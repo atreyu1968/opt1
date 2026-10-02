@@ -1,0 +1,20 @@
+[Unit]
+Description=OPT1 Progress Server
+After=network.target
+
+[Service]
+Type=simple
+User=opt1
+Group=opt1
+WorkingDirectory=__APP_DIR__/server
+ExecStart=/usr/bin/node __APP_DIR__/server/server.mjs
+Restart=on-failure
+RestartSec=5
+Environment=NODE_ENV=production
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ReadWritePaths=/var/lib/opt1 __APP_DIR__/server
+
+[Install]
+WantedBy=multi-user.target
